@@ -32,7 +32,10 @@ class App extends React.Component {
         return <Router>
             <div>
                 {/* 首页：一个列表组件，展示所有示例 */}
+                {/*案例列表*/}
                 <Route exact path="/" component={Samples}/>
+
+                {/*视频案例*/}
                 <Route exact path="/camera" component={Camera}/>
                 <Route exact path="/microphone" component={Microphone}/>
                 <Route exact path="/canvas" component={Canvas}/>
