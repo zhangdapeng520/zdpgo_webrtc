@@ -1,11 +1,12 @@
 import React from "react";
-import { Select } from "antd";
+// antd选择器参考文档：https://ant.design/components/select-cn/
+import {Select} from "antd";
 import '../styles/css/video-filter.scss';
 
-const { Option } = Select;
+const {Option} = Select;
 
-//视频
-let video;
+
+let video; // 视频
 
 /**
  * 视频滤镜示例
@@ -14,14 +15,16 @@ class VideoFilter extends React.Component {
 
     componentDidMount() {
         //获取video对象
-        video = this.refs['video'];
+        video = this.refVideo;
+
         //约束条件
         const constraints = {
-            //禁用音频
+            // 是否启用音频
             audio: false,
-            //启用视频
+            // 是否启用视频
             video: true
         };
+
         //根据约束获取视频流
         navigator.mediaDevices.getUserMedia(constraints).then(this.handleSuccess).catch(this.handleError);
     }
@@ -29,8 +32,7 @@ class VideoFilter extends React.Component {
     //获取视频成功
     handleSuccess = (stream) => {
         window.stream = stream;
-        //将视频源指定为视频流
-        video.srcObject = stream;
+        video.srcObject = stream; // 将视频源指定为视频流
     }
 
     //错误处理
@@ -40,9 +42,8 @@ class VideoFilter extends React.Component {
 
     //选择框选择改变
     handleChange = (value) => {
-        console.log(`selected ${value}`);
-        //设置滤镜
-        video.className = value;
+        console.log(`选择的滤镜改变了： ${value}`);
+        video.className = value; // 设置滤镜
     }
 
     render() {
@@ -53,9 +54,9 @@ class VideoFilter extends React.Component {
                     <span>视频滤镜示例</span>
                 </h1>
                 {/* 视频渲染 */}
-                <video ref='video' playsInline autoPlay></video>
+                <video ref={(el)=>this.refVideo = el} playsInline autoPlay/>
                 {/* 滤镜属性选择 */}
-                <Select defaultValue="none" style={{ width: '100px' }} onChange={this.handleChange}>
+                <Select defaultValue="none" style={{width: '100px'}} onChange={this.handleChange}>
                     <Option value="none">没有滤镜</Option>
                     <Option value="blur">模糊</Option>
                     <Option value="grayscale">灰度</Option>
@@ -66,5 +67,6 @@ class VideoFilter extends React.Component {
         );
     }
 }
+
 //导出组件
 export default VideoFilter;
