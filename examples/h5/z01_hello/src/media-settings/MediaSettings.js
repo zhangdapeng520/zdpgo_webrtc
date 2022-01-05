@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button, Select } from 'antd';
+import {Button, Modal, Select} from 'antd';
 import SoundMeter from './soundmeter';
 import '../../styles/css/media-settings.scss';
 
@@ -102,19 +102,19 @@ export default class MediaSettings extends React.Component {
                         }
                     }
                 }).then(() => {
-                    //处理好后将三种设备数据返回
-                    let data = { videoDevices, audioDevices, audioOutputDevices };
-                    pResolve(data);
-                });
+                //处理好后将三种设备数据返回
+                let data = {videoDevices, audioDevices, audioOutputDevices};
+                pResolve(data);
+            });
         });
     }
 
     //音频音量处理
     soundMeterProcess = () => {
         //读取音量值,再乘以一个系数,可以得到音量条的宽度
-        var val = (window.soundMeter.instant.toFixed(2) * 348) + 1;
+        let val = (window.soundMeter.instant.toFixed(2) * 348) + 1;
         //设置音量值状态
-        this.setState({ audioLevel: val });
+        this.setState({audioLevel: val});
         if (this.state.visible) {
             //每隔100毫秒调用一次soundMeterProcess函数,模拟实时检测音频音量
             setTimeout(this.soundMeterProcess, 100);
@@ -141,9 +141,9 @@ export default class MediaSettings extends React.Component {
         //定义约束条件
         let constraints = {
             //设置音频设备Id
-            audio: { deviceId: audioSource ? { exact: audioSource } : undefined },
+            audio: {deviceId: audioSource ? {exact: audioSource} : undefined},
             //设置视频设备Id
-            video: { deviceId: videoSource ? { exact: videoSource } : undefined }
+            video: {deviceId: videoSource ? {exact: videoSource} : undefined}
         };
         //根据约束条件获取数据流
         navigator.mediaDevices.getUserMedia(constraints)
@@ -158,8 +158,10 @@ export default class MediaSettings extends React.Component {
                 //返回枚举设备
                 return navigator.mediaDevices.enumerateDevices();
             })
-            .then((devces) => { })
-            .catch((erro) => { });
+            .then((devces) => {
+            })
+            .catch((erro) => {
+            });
 
 
     }
@@ -178,7 +180,7 @@ export default class MediaSettings extends React.Component {
         if (!stream) {
             return;
         }
-        var tracks, i, len;
+        let tracks, i, len;
         //判断是否有getTracks方法
         if (stream.getTracks) {
             //获取所有的Track
@@ -252,19 +254,19 @@ export default class MediaSettings extends React.Component {
     //音频输入设备改变
     handleAudioDeviceChange = (e) => {
         console.log('选择的音频输入设备为: ' + JSON.stringify(e));
-        this.setState({ selectedAudioDevice: e });
+        this.setState({selectedAudioDevice: e});
         setTimeout(this.startPreview, 100);
     }
     //视频输入设备改变
     handleVideoDeviceChange = (e) => {
         console.log('选择的视频输入设备为: ' + JSON.stringify(e));
-        this.setState({ selectedVideoDevice: e });
+        this.setState({selectedVideoDevice: e});
         setTimeout(this.startPreview, 100);
     }
     //分辨率选择改变
     handleResolutionChange = (e) => {
         console.log('选择的分辨率为: ' + JSON.stringify(e));
-        this.setState({ resolution:e});
+        this.setState({resolution: e});
     }
 
     render() {
@@ -284,10 +286,12 @@ export default class MediaSettings extends React.Component {
                     <div className="item">
                         <span className="item-left">麦克风</span>
                         <div className="item-right">
-                            <Select value={this.state.selectedAudioDevice} style={{ width: 350 }} onChange={this.handleAudioDeviceChange}>
+                            <Select value={this.state.selectedAudioDevice} style={{width: 350}}
+                                    onChange={this.handleAudioDeviceChange}>
                                 {
                                     this.state.audioDevices.map((device, index) => {
-                                        return (<Option value={device.deviceId} key={device.deviceId}>{device.label}</Option>);
+                                        return (<Option value={device.deviceId}
+                                                        key={device.deviceId}>{device.label}</Option>);
                                     })
                                 }
                             </Select>
@@ -303,15 +307,18 @@ export default class MediaSettings extends React.Component {
                     <div className="item">
                         <span className="item-left">摄像头</span>
                         <div className="item-right">
-                            <Select value={this.state.selectedVideoDevice} style={{ width: 350 }} onChange={this.handleVideoDeviceChange}>
+                            <Select value={this.state.selectedVideoDevice} style={{width: 350}}
+                                    onChange={this.handleVideoDeviceChange}>
                                 {
                                     this.state.videoDevices.map((device, index) => {
-                                        return (<Option value={device.deviceId} key={device.deviceId}>{device.label}</Option>);
+                                        return (<Option value={device.deviceId}
+                                                        key={device.deviceId}>{device.label}</Option>);
                                     })
                                 }
                             </Select>
                             <div className="video-container">
-                                <video id='previewVideo' ref='previewVideo' autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'contain' }}></video>
+                                <video id='previewVideo' ref='previewVideo' autoPlay playsInline
+                                       style={{width: '100%', height: '100%', objectFit: 'contain'}}></video>
                             </div>
 
                         </div>
@@ -319,7 +326,8 @@ export default class MediaSettings extends React.Component {
                     <div className="item">
                         <span className="item-left">清晰度</span>
                         <div className="item-right">
-                            <Select style={{ width: 350 }} value={this.state.resolution} onChange={this.handleResolutionChange}>
+                            <Select style={{width: 350}} value={this.state.resolution}
+                                    onChange={this.handleResolutionChange}>
                                 <Option value="qvga">流畅(320x240)</Option>
                                 <Option value="vga">标清(640x360)</Option>
                                 <Option value="hd">高清(1280x720)</Option>

@@ -1,25 +1,21 @@
 import React from "react";
+
 /**
  * 捕获Video作为媒体流示例
  */
 class CaptureVideo extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
     }
 
     //开始播放
     canPlay = () => {
+        let sourceVideo = this.refSourceVideo; // 源视频dom对象
+        let playerVideo = this.refPlayerVideo;// 播放视频dom对象
+        let stream; // MediaStream对象
+        const fps = 0; // 捕获侦率
 
-        //源视频对象
-        let sourceVideo = this.refs['sourceVideo'];
-        //播放视频对象
-        let playerVideo = this.refs['playerVideo'];
-
-        //MediaStream对象
-        let stream;
-        //捕获侦率
-        const fps = 0;
-        //浏览器兼容判断,捕获媒体流
+        // 浏览器兼容判断,捕获媒体流
         if (sourceVideo.captureStream) {
             stream = sourceVideo.captureStream(fps);
         } else if (sourceVideo.mozCaptureStream) {
@@ -28,7 +24,8 @@ class CaptureVideo extends React.Component {
             console.error('captureStream不支持');
             stream = null;
         }
-        //将播放器源指定为stream
+
+        // 将播放器源指定为stream
         playerVideo.srcObject = stream;
     }
 
@@ -39,14 +36,15 @@ class CaptureVideo extends React.Component {
                     <span>捕获Video作为媒体流示例</span>
                 </h1>
                 {/* 源视频 显示控制按钮 循环播放 */}
-                <video ref="sourceVideo" playsInline controls loop muted onCanPlay={this.canPlay}>
+                <video ref={(el) => this.refSourceVideo = el} playsInline controls loop muted onCanPlay={this.canPlay}>
                     {/* mp4视频路径 */}
-                    <source src="./assets/webrtc.mp4" type="video/mp4" />
+                    <source src="./assets/webrtc.mp4" type="video/mp4"/>
                 </video>
-                <video ref="playerVideo" playsInline autoPlay></video>
+                <video ref={(el) => this.refPlayerVideo = el} playsInline autoPlay/>
             </div>
         );
     }
 }
+
 //导出组件
 export default CaptureVideo;
