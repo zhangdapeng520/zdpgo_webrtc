@@ -31,9 +31,9 @@ class RecordVideo extends React.Component {
     startClickHandler = async (e) => {
         //约束条件
         let constraints = {
-            //开启音频
+            // 开启音频
             audio: true,
-            //设置视频分辨率为1280*720
+            // 设置视频分辨率为1280*720
             video: {
                 width: 1280, height: 720
             }
@@ -41,7 +41,7 @@ class RecordVideo extends React.Component {
         console.log('约束条件为:', constraints);
         try {
             // 适配不同的浏览器的写法
-            // navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
             //获取音视频流
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -143,7 +143,8 @@ class RecordVideo extends React.Component {
         });
     }
 
-    //点击下载录制文件
+    // 点击下载录制文件
+    // TODO：下载的录制文件，比原本的文件少了几秒钟
     downloadButtonClickHandler = (e) => {
         // 生成blob文件,类型为video/webm
         const blob = new Blob(recordedBlobs, {type: 'video/webm'});
