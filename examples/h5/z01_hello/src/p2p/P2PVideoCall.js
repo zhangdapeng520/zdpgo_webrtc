@@ -11,7 +11,7 @@ var configuration;
  */
 export default class P2PVideoCall extends events.EventEmitter {
     //构造函数
-    constructor(p2pUrl,turnUrl,name,roomId) {
+    constructor(p2pUrl, turnUrl, name, roomId) {
         super();
         //Socket
         this.socket = null;
@@ -31,7 +31,7 @@ export default class P2PVideoCall extends events.EventEmitter {
         this.turnUrl = turnUrl;
         //本地媒体流
         this.localStream;
-       
+
         //RTCPeerConnection兼容性处理
         RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection;
         //RTCSessionDescription兼容性处理
@@ -40,25 +40,27 @@ export default class P2PVideoCall extends events.EventEmitter {
         navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia || navigator.msGetUserMedia;
 
         //ICE配置
-        configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
+        configuration = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
 
         //访问Turn中转服务器
         Axios.get(this.turnUrl, {}).then(res => {
-            if(res.status === 200){
+            if (res.status === 200) {
                 let _turnCredential = res.data;
-                configuration = { "iceServers": [
-                    { 
-                        "url":  _turnCredential['uris'][0],
-                        'username': _turnCredential['username'],
-                        'credential': _turnCredential['password']
-                    }
-                ]};
+                configuration = {
+                    "iceServers": [
+                        {
+                            "url": _turnCredential['uris'][0],
+                            'username': _turnCredential['username'],
+                            'credential': _turnCredential['password']
+                        }
+                    ]
+                };
                 console.log("configuration:" + JSON.stringify(configuration));
             }
-        }).catch((error)=>{
+        }).catch((error) => {
             console.log('网络错误:请求不到TurnServer服务器');
         });
-    
+
         //初始化WebSocket
         this.socket = new WebSocket(this.p2pUrl);
         //连接打开
@@ -69,15 +71,15 @@ export default class P2PVideoCall extends events.EventEmitter {
             //定义消息
             let message = {
                 //加入房间
-                'type':'joinRoom',
+                'type': 'joinRoom',
                 //数据
-                'data':{
+                'data': {
                     //用户名
                     name: this.name,
                     //用户Id
                     id: this.userId,
                     //房间Id
-                    roomId:this.roomId,
+                    roomId: this.roomId,
                 }
             }
             //发送消息
@@ -130,25 +132,25 @@ export default class P2PVideoCall extends events.EventEmitter {
     getLocalStream = (type) => {
         return new Promise((pResolve, pReject) => {
             //设置约束条件
-            var constraints = { audio: true, video: (type === 'video') ? { width: 1280, height: 720 } : false };
+            var constraints = {audio: true, video: (type === 'video') ? {width: 1280, height: 720} : false};
             //屏幕类型
             if (type == 'screen') {
                 //调用getDisplayMedia接口获取桌面流
-                navigator.mediaDevices.getDisplayMedia({ video: true }).then((mediaStream) => {
+                navigator.mediaDevices.getDisplayMedia({video: true}).then((mediaStream) => {
                     pResolve(mediaStream);
                 }).catch((err) => {
-                    console.log(err.name + ": " + err.message);
-                    pReject(err);
-                }
+                        console.log(err.name + ": " + err.message);
+                        pReject(err);
+                    }
                 );
-            }else{
+            } else {
                 //调用getUserMedia接口获取音视频流
-                navigator.mediaDevices.getUserMedia(constraints).then((mediaStream) =>{
+                navigator.mediaDevices.getUserMedia(constraints).then((mediaStream) => {
                     pResolve(mediaStream);
                 }).catch((err) => {
-                    console.log(err.name + ": " + err.message);
-                    pReject(err);
-                }
+                        console.log(err.name + ": " + err.message);
+                        pReject(err);
+                    }
                 );
             }
         });
@@ -196,13 +198,13 @@ export default class P2PVideoCall extends events.EventEmitter {
             //消息类型
             type: 'hangUp',
             //数据
-            data:{
+            data: {
                 //当前会话Id
                 sessionId: this.sessionId,
                 //消息发送者
                 from: this.userId,
                 //房间Id
-                roomId:this.roomId,
+                roomId: this.roomId,
             }
         }
         //发送消息
@@ -227,19 +229,19 @@ export default class P2PVideoCall extends events.EventEmitter {
                     //消息类型为offer
                     type: 'offer',
                     //数据
-                    data:{
+                    data: {
                         //对方Id
                         to: id,
                         //本地Id
-                        from:this.userId,
+                        from: this.userId,
                         //SDP信息
-                        description: {'sdp':desc.sdp,'type':desc.type},
+                        description: {'sdp': desc.sdp, 'type': desc.type},
                         //会话Id
                         sessionId: this.sessionId,
                         //媒体类型
                         media: media,
                         //房间Id
-                        roomId:this.roomId,
+                        roomId: this.roomId,
                     }
                 }
                 //发送消息
@@ -270,11 +272,11 @@ export default class P2PVideoCall extends events.EventEmitter {
                     //Candidate消息类型
                     type: 'candidate',
                     //数据
-                    data:{
+                    data: {
                         //对方Id
                         to: id,
                         //自己Id
-                        from:this.userId,
+                        from: this.userId,
                         //Candidate数据
                         candidate: {
                             'sdpMLineIndex': event.candidate.sdpMLineIndex,
@@ -284,7 +286,7 @@ export default class P2PVideoCall extends events.EventEmitter {
                         //会话Id
                         sessionId: this.sessionId,
                         //房间Id
-                        roomId:this.roomId,
+                        roomId: this.roomId,
                     }
                 }
                 //发送消息
@@ -318,9 +320,9 @@ export default class P2PVideoCall extends events.EventEmitter {
         //添加本地流至PC里
         pc.addStream(localstream);
         //如果是提议方创建Offer
-        if (isOffer){
+        if (isOffer) {
             this.createOffer(pc, id, media);
-        } 
+        }
         return pc;
     }
 
@@ -358,7 +360,7 @@ export default class P2PVideoCall extends events.EventEmitter {
             if (pc && data.description) {
                 //应答方法设置远端会话描述SDP
                 pc.setRemoteDescription(new RTCSessionDescription(data.description), () => {
-                    if (pc.remoteDescription.type == "offer"){
+                    if (pc.remoteDescription.type == "offer") {
                         //生成应答信息
                         pc.createAnswer((desc) => {
                             console.log('createAnswer: ', desc);
@@ -370,17 +372,17 @@ export default class P2PVideoCall extends events.EventEmitter {
                                     //应答消息类型
                                     type: 'answer',
                                     //数据
-                                    data:{
+                                    data: {
                                         //对方Id
                                         to: from,
                                         //自己Id
-                                        from:this.userId,
+                                        from: this.userId,
                                         //SDP信息
-                                        description: {'sdp':desc.sdp, 'type':desc.type},
+                                        description: {'sdp': desc.sdp, 'type': desc.type},
                                         //会话Id
                                         sessionId: this.sessionId,
                                         //房间Id
-                                        roomId:this.roomId,
+                                        roomId: this.roomId,
                                     }
                                 };
                                 //发送消息
@@ -458,13 +460,13 @@ export default class P2PVideoCall extends events.EventEmitter {
         if (pc1 !== undefined) {
             console.log("关闭视频");
             pc1.close();
-            delete peerConnections[ids[0]]; 
+            delete peerConnections[ids[0]];
         }
         //关闭pc2
         if (pc2 !== undefined) {
             console.log("关闭视频");
             pc2.close();
-            delete peerConnections[ids[1]]; 
+            delete peerConnections[ids[1]];
         }
         //关闭媒体流
         if (this.localStream != null) {
@@ -480,7 +482,7 @@ export default class P2PVideoCall extends events.EventEmitter {
     logError = (error) => {
         console.log("logError", error);
     }
-    
+
     //关闭媒体流
     closeMediaStream = (stream) => {
         if (!stream)

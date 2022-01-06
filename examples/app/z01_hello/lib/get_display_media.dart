@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_webrtc/webrtc.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'dart:core';
 
@@ -14,53 +13,55 @@ class GetDisplayMediaSample extends StatefulWidget {
 }
 
 class _GetDisplayMediaSampleState extends State<GetDisplayMediaSample> {
-  //本地媒体流
+  // 本地媒体流
   MediaStream? _localStream;
-  //本地视频渲染对象
+
+  // 本地视频渲染对象
   final _localRenderer = RTCVideoRenderer();
-  //是否打开
+
+  // 是否打开
   bool _isOpen = false;
 
   @override
   initState() {
     super.initState();
-    //RTCVideoRenderer初始化
+    // RTCVideoRenderer初始化
     initRenderers();
   }
 
-  //在销毁dispose之前,会调用deactivate,可用于释放资源
+  // 在销毁dispose之前,会调用deactivate,可用于释放资源
   @override
   deactivate() {
     super.deactivate();
-    //关闭处理
+    // 关闭处理
     if (_isOpen) {
       _close();
     }
-    //释放资源并停止渲染
+    // 释放资源并停止渲染
     _localRenderer.dispose();
   }
 
   initRenderers() async {
-    //RTCVideoRenderer初始化
+    // RTCVideoRenderer初始化
     await _localRenderer.initialize();
   }
 
-  //打开设备,平台的消息是异步的,所以这里需要使用async
+  // 打开设备,平台的消息是异步的,所以这里需要使用async
   _open() async {
-    //约束条件
+    // 约束条件
     final Map<String, dynamic> mediaConstraints = {
       "audio": false,
       "video": true
     };
 
     try {
-      //根据约束条件获取媒体流
-      navigator.getDisplayMedia(mediaConstraints).then((stream){
-        //将获取到的流stream赋给_localStream
-        _localStream = stream;
-        //将本地视频渲染对象与_localStream绑定
-        _localRenderer.srcObject = _localStream;
-      });
+      // 根据约束条件获取媒体流
+      var stream =
+          await navigator.mediaDevices.getDisplayMedia(mediaConstraints);
+      //将获取到的流stream赋给_localStream
+      _localStream = stream;
+      //将本地视频渲染对象与_localStream绑定
+      _localRenderer.srcObject = _localStream;
     } catch (e) {
       print(e.toString());
     }
@@ -93,35 +94,35 @@ class _GetDisplayMediaSampleState extends State<GetDisplayMediaSample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //标题
+      // 标题
       appBar: AppBar(
         title: Text('屏幕共享示例'),
       ),
-      //根据手机旋转方向更新UI
+      // 根据手机旋转方向更新UI
       body: OrientationBuilder(
         builder: (context, orientation) {
-          //居中
+          // 居中
           return Center(
             child: Container(
-              //设置外边距
+              // 设置外边距
               margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-              //设置容器宽度为页面宽度
+              // 设置容器宽度为页面宽度
               width: MediaQuery.of(context).size.width,
-              //设置容器高度为页面高度
+              // 设置容器高度为页面高度
               height: MediaQuery.of(context).size.height,
-              //WebRTC视频渲染控件
+              // WebRTC视频渲染控件
               child: RTCVideoView(_localRenderer),
-              //设置背景色
+              // 设置背景色
               decoration: BoxDecoration(color: Colors.black54),
             ),
           );
         },
       ),
-      //右下角按钮
+      // 右下角按钮
       floatingActionButton: FloatingActionButton(
-        //打开或关闭处理
+        // 打开或关闭处理
         onPressed: _isOpen ? _close : _open,
-        //按钮图标
+        // 按钮图标
         child: Icon(_isOpen ? Icons.close : Icons.add),
       ),
     );

@@ -19,6 +19,14 @@ class _GetUserMediaSampleState extends State<GetUserMediaSample> {
   MediaStream? _localStream;
 
   // 本地视频渲染对象
+  // 以纹理Texture的方式进行渲染，从而获取较高的渲染速度。有以下几个重要属性
+  // textureId：纹理ID
+  // rotation：旋转
+  // width：宽度
+  // height：高度
+  // aspectRatio：宽高比
+  // mirror：反转
+  // objectFit：填充模式
   final _localRenderer = RTCVideoRenderer();
 
   //是否打开
@@ -26,17 +34,17 @@ class _GetUserMediaSampleState extends State<GetUserMediaSample> {
 
   @override
   initState() {
+    // 生命周期方法，在组件创建的时候自动执行
     super.initState();
-    //RTCVideoRenderer初始化
-    initRenderers();
+    initRenderers(); // RTCVideoRenderer初始化
   }
 
-  //在销毁dispose之前,会调用deactivate,可用于释放资源
   @override
   deactivate() {
+    // 生命周期方法，在销毁dispose之前,会调用deactivate,可用于释放资源
     super.deactivate();
-    //关闭处理
     if (_isOpen) {
+      // 关闭处理
       _close();
     }
     //释放资源并停止渲染
@@ -44,7 +52,7 @@ class _GetUserMediaSampleState extends State<GetUserMediaSample> {
   }
 
   initRenderers() async {
-    //RTCVideoRenderer初始化
+    // RTCVideoRenderer初始化
     await _localRenderer.initialize();
   }
 
@@ -96,14 +104,14 @@ class _GetUserMediaSampleState extends State<GetUserMediaSample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //标题
+      // 标题
       appBar: AppBar(
         title: Text('GetUserMedia示例'),
       ),
-      //根据手机旋转方向更新UI
+      // 根据手机旋转方向更新UI
       body: OrientationBuilder(
         builder: (context, orientation) {
-          //居中
+          // 居中
           return Center(
             child: Container(
               // 设置外边距
@@ -114,17 +122,17 @@ class _GetUserMediaSampleState extends State<GetUserMediaSample> {
               height: MediaQuery.of(context).size.height,
               // WebRTC视频渲染控件
               child: RTCVideoView(_localRenderer, mirror: true),
-              //设置背景色
+              // 设置背景色
               decoration: BoxDecoration(color: Colors.black54),
             ),
           );
         },
       ),
-      //右下角按钮
+      // 右下角按钮
       floatingActionButton: FloatingActionButton(
-        //打开或关闭处理
+        // 打开或关闭处理
         onPressed: _isOpen ? _close : _open,
-        //按钮图标
+        // 按钮图标
         child: Icon(_isOpen ? Icons.close : Icons.add),
       ),
     );

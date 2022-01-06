@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_webrtc/webrtc.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'dart:core';
 import 'dart:async';
@@ -148,13 +147,14 @@ class _PeerConnectionSampleState extends State<PeerConnectionSample> {
 
     try {
       //根据媒体约束获取本地媒体流
-      _localStream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
+      _localStream =
+      await navigator.mediaDevices.getUserMedia(mediaConstraints);
       //将本地媒体流与本地视频对象绑定
       _localRenderer.srcObject = _localStream;
 
       //创建本地连接对象
       _localConnection =
-          await createPeerConnection(configuration, pc_constraints);
+      await createPeerConnection(configuration, pc_constraints);
       //添加本地Candidate事件监听
       _localConnection!.onIceCandidate = _onLocalCandidate;
       //添加本地Ice连接状态事件监听
@@ -164,11 +164,11 @@ class _PeerConnectionSampleState extends State<PeerConnectionSample> {
       _localConnection!.addStream(_localStream!);
       //设置本地禁音状态为false
       // _localStream.getAudioTracks()[0].setMicrophoneMute(false);
-      // _localStream.getAudioTracks()[0].setMicrophoneMute(false);
+      Helper.setMicrophoneMute(false, _localStream!.getAudioTracks()[0]);
 
       //创建远端连接对象
       _remoteConnection =
-          await createPeerConnection(configuration, pc_constraints);
+      await createPeerConnection(configuration, pc_constraints);
       //添加远端Candidate事件监听
       _remoteConnection!.onIceCandidate = _onRemoteCandidate;
       //监听获取到远端视频流事件
@@ -178,7 +178,7 @@ class _PeerConnectionSampleState extends State<PeerConnectionSample> {
 
       //本地连接创建提议Offer
       RTCSessionDescription offer =
-          await _localConnection!.createOffer(sdp_constraints);
+      await _localConnection!.createOffer(sdp_constraints);
       // print("offer:" + offer.sdp);
       print(offer.sdp);
       //本地连接设置本地sdp信息
@@ -188,7 +188,7 @@ class _PeerConnectionSampleState extends State<PeerConnectionSample> {
 
       //远端连接创建应答Answer
       RTCSessionDescription answer =
-          await _remoteConnection!.createAnswer(sdp_constraints);
+      await _remoteConnection!.createAnswer(sdp_constraints);
       // print("answer:" + answer.sdp);
       print(answer.sdp);
       //远端连接设置本地sdp信息
@@ -238,63 +238,63 @@ class _PeerConnectionSampleState extends State<PeerConnectionSample> {
   @override
   Widget build(BuildContext context) {
     return
-        //页面脚手架
-        Scaffold(
-      //应用栏
-      appBar: AppBar(
-        //标题
-        title: Text('连接建立示例'),
-      ),
-      //旋转组件,可用于判断旋转方向
-      body: OrientationBuilder(
-        //orientation为旋转方向
-        builder: (context, orientation) {
-          //居中
-          return Center(
-            //容器
-            child: Container(
-              decoration: BoxDecoration(color: Colors.white),
-              child: Stack(
-                children: <Widget>[
-                  Align(
-                    //判断是否为垂直方向
-                    alignment: orientation == Orientation.portrait
-                        ? const FractionalOffset(0.5, 0.1)
-                        : const FractionalOffset(0.0, 0.5),
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                      width: 320.0,
-                      height: 240.0,
-                      //本地视频渲染
-                      child: RTCVideoView(_localRenderer),
-                      decoration: BoxDecoration(color: Colors.black54),
+      //页面脚手架
+      Scaffold(
+        //应用栏
+        appBar: AppBar(
+          //标题
+          title: Text('连接建立示例'),
+        ),
+        //旋转组件,可用于判断旋转方向
+        body: OrientationBuilder(
+          //orientation为旋转方向
+          builder: (context, orientation) {
+            //居中
+            return Center(
+              //容器
+              child: Container(
+                decoration: BoxDecoration(color: Colors.white),
+                child: Stack(
+                  children: <Widget>[
+                    Align(
+                      //判断是否为垂直方向
+                      alignment: orientation == Orientation.portrait
+                          ? const FractionalOffset(0.5, 0.1)
+                          : const FractionalOffset(0.0, 0.5),
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                        width: 320.0,
+                        height: 240.0,
+                        //本地视频渲染
+                        child: RTCVideoView(_localRenderer),
+                        decoration: BoxDecoration(color: Colors.black54),
+                      ),
                     ),
-                  ),
-                  Align(
-                    //判断是否为垂直方向
-                    alignment: orientation == Orientation.portrait
-                        ? const FractionalOffset(0.5, 0.9)
-                        : const FractionalOffset(1.0, 0.5),
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                      width: 320.0,
-                      height: 240.0,
-                      //远端视频渲染
-                      child: RTCVideoView(_remoteRenderer),
-                      decoration: BoxDecoration(color: Colors.black54),
+                    Align(
+                      //判断是否为垂直方向
+                      alignment: orientation == Orientation.portrait
+                          ? const FractionalOffset(0.5, 0.9)
+                          : const FractionalOffset(1.0, 0.5),
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                        width: 320.0,
+                        height: 240.0,
+                        //远端视频渲染
+                        child: RTCVideoView(_remoteRenderer),
+                        decoration: BoxDecoration(color: Colors.black54),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
-      //浮动按钮
-      floatingActionButton: FloatingActionButton(
-        onPressed: _isConnected ? _close : _open,
-        child: Icon(_isConnected ? Icons.close : Icons.add),
-      ),
-    );
+            );
+          },
+        ),
+        //浮动按钮
+        floatingActionButton: FloatingActionButton(
+          onPressed: _isConnected ? _close : _open,
+          child: Icon(_isConnected ? Icons.close : Icons.add),
+        ),
+      );
   }
 }

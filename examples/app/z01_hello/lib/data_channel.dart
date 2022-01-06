@@ -103,8 +103,8 @@ class _DataChannelSampleState extends State<DataChannelSample> {
       //是否由用户代理或应用程序协商频道
       _dataChannelDict!.negotiated = false;
       //创建发送通道
-      _sendChannel = await _localConnection!.createDataChannel(
-          'dataChannel', _dataChannelDict!);
+      _sendChannel = await _localConnection!
+          .createDataChannel('dataChannel', _dataChannelDict!);
 
       //创建远端连接对象
       _remoteConnection =
@@ -241,7 +241,7 @@ class _DataChannelSampleState extends State<DataChannelSample> {
                 Text(
                   '接收到的消息:' + _message,
                 ),
-                RaisedButton(
+                ElevatedButton(
                   child: Text('点击发送文本'),
                   onPressed: () {
                     this._sendMessage();

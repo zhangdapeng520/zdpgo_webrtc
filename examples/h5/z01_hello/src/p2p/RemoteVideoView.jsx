@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from "prop-types";
+
 /**
  * 远端视频组件
  */
@@ -24,7 +25,7 @@ export default class RemoteVideoView extends Component {
             //上下左右为0px表示撑满整个容器
             left: '0px',
             right: '0px',
-            top:'0px',
+            top: '0px',
             bottom: '0px',
             //背景色
             backgroundColor: '#323232',
@@ -35,9 +36,9 @@ export default class RemoteVideoView extends Component {
         return (
             <div key={this.props.id} style={style}>
                 {/* 设置ref及id值 视频自动播放 */}
-                <video ref={this.props.id} id={this.props.id} 
-                autoPlay playsInline
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                <video ref={this.props.id} id={this.props.id}
+                       autoPlay playsInline
+                       style={{width: '100%', height: '100%', objectFit: 'contain'}}/>
             </div>
         )
     }

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-// import 'package:flutter_webrtc/webrtc.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'dart:core';
 
@@ -62,7 +60,7 @@ class _ControlDeviceSampleState extends State<ControlDeviceSample> {
     //约束条件
     final Map<String, dynamic> mediaConstraints = {
       "audio": true,
-      "video": { "width": 1280, "height": 720}
+      "video": {"width": 1280, "height": 720}
     };
 
     try {
@@ -104,9 +102,7 @@ class _ControlDeviceSampleState extends State<ControlDeviceSample> {
   //切换前后置摄像头
   _switchCamera() {
     //判断本地流及视频轨道长度
-    if (_localStream != null && _localStream!
-        .getVideoTracks()
-        .length > 0) {
+    if (_localStream != null && _localStream!.getVideoTracks().length > 0) {
       //调用视频轨道的切换摄像头方法
       _localStream!.getVideoTracks()[0].switchCamera();
     } else {
@@ -117,9 +113,7 @@ class _ControlDeviceSampleState extends State<ControlDeviceSample> {
   //是否禁用摄像头
   _turnCamera() {
     //判断本地流及视频轨道长度
-    if (_localStream != null && _localStream!
-        .getVideoTracks()
-        .length > 0) {
+    if (_localStream != null && _localStream!.getVideoTracks().length > 0) {
       var muted = !_cameraOff;
       setState(() {
         _cameraOff = muted;
@@ -134,9 +128,7 @@ class _ControlDeviceSampleState extends State<ControlDeviceSample> {
   //是否静音
   _turnMicrophone() {
     //判断本地流及音频轨道长度
-    if (_localStream != null && _localStream!
-        .getAudioTracks()
-        .length > 0) {
+    if (_localStream != null && _localStream!.getAudioTracks().length > 0) {
       var muted = !_microphoneOff;
       setState(() {
         _microphoneOff = muted;
@@ -156,9 +148,9 @@ class _ControlDeviceSampleState extends State<ControlDeviceSample> {
   _switchSpeaker() {
     this.setState(() {
       _speakerOn = !_speakerOn;
-      //获取音频轨道
+      // 获取音频轨道
       MediaStreamTrack audioTrack = _localStream!.getAudioTracks()[0];
-      //调用音频轨道的设置是否启用扬声器方法
+      // 调用音频轨道的设置是否启用扬声器方法
       audioTrack.enableSpeakerphone(_speakerOn);
       print("切换至:" + (_speakerOn ? "扬声器" : "听筒"));
     });
@@ -181,15 +173,9 @@ class _ControlDeviceSampleState extends State<ControlDeviceSample> {
               //设置外边距
               margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
               //设置容器宽度为页面宽度
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               //设置容器高度为页面高度
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height,
+              height: MediaQuery.of(context).size.height,
               //WebRTC视频渲染控件
               child: RTCVideoView(_localRenderer),
               //设置背景色

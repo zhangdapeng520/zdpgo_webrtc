@@ -1,29 +1,30 @@
 package main
 
 import (
-	"gopkg.in/ini.v1"
 	"os"
+
+	"gopkg.in/ini.v1"
 	"turn-server/pkg/logger"
 	"turn-server/pkg/server"
 	"turn-server/pkg/turn"
 )
 
 func main() {
-	//加载配置文件
+	// 加载配置文件
 	cfg, err := ini.Load("configs/config.ini")
 	if err != nil {
 		logger.Errorf("Fail to read file: %v", err)
 		os.Exit(1)
 	}
 
-	//读取IP
+	// 读取IP
 	publicIP := cfg.Section("turn").Key("public_ip").String()
-	//读取端口
+	// 读取端口
 	stunPort, err := cfg.Section("turn").Key("port").Int()
 	if err != nil {
 		stunPort = 3478
 	}
-	//读取realm
+	// 读取realm
 	realm := cfg.Section("turn").Key("realm").String()
 
 	turnConfig := turn.DefaultConfig()

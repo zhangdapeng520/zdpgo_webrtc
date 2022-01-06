@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from "prop-types";
 import VideocamOffIcon from "mdi-react/VideocamOffIcon";
+
 /**
  * 本地视频组件
  */
@@ -12,7 +13,7 @@ export default class LocalVideoView extends Component {
         let video = this.refs[this.props.id];
         //指定视频的源为stream
         video.srcObject = this.props.stream;
-       //当获取到MetaData数据后开始播放
+        //当获取到MetaData数据后开始播放
         video.onloadedmetadata = (e) => {
             video.play();
         };
@@ -21,7 +22,7 @@ export default class LocalVideoView extends Component {
     render() {
         //本地小视频样式
         const small = {
-            display:'flex',
+            display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             //绝对定位
@@ -50,20 +51,20 @@ export default class LocalVideoView extends Component {
         //禁止视频图标样式
         const videoMuteIcon = {
             position: 'absolute',
-            color:'#fff',
-          }
+            color: '#fff',
+        }
 
         return (
             <div key={this.props.id}
                 //小视频样式
-                style={small}>
+                 style={small}>
                 {/* 设置ref及id值 视频自动播放 objectFit为cover模式可以平铺整个视频 */}
-                <video ref={this.props.id} id={this.props.id} 
-                autoPlay playsInline muted={true}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', }} />
+                <video ref={this.props.id} id={this.props.id}
+                       autoPlay playsInline muted={true}
+                       style={{width: '100%', height: '100%', objectFit: 'cover',}}/>
                 {
                     //判断禁止视频属性值    
-                    this.props.muted? <VideocamOffIcon style={videoMuteIcon}/> : null
+                    this.props.muted ? <VideocamOffIcon style={videoMuteIcon}/> : null
                 }
             </div>
         )
