@@ -2,7 +2,6 @@
  * 约束条件
  */
 class P2PConstraints {
-
   //Media约束条件
   static const Map<String, dynamic> MEDIA_CONSTRAINTS = {
     //开启音频

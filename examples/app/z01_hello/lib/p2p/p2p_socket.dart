@@ -14,14 +14,19 @@ typedef void OnOpenCallback();
 class P2PSocket {
   //连接url
   String _url;
+
   //Socket对象
   var _socket;
+
   //打开回调函数
   OnOpenCallback? onOpen;
+
   //消息回调函数
   OnMessageCallback? onMessage;
+
   //关闭回调函数
   OnCloseCallback? onClose;
+
   //构造函数
   P2PSocket(this._url);
 
@@ -56,8 +61,7 @@ class P2PSocket {
 
   //关闭socket
   close() {
-    if (_socket != null)
-      _socket.close();
+    if (_socket != null) _socket.close();
   }
 
   Future<WebSocket> _connectForSelfSignedCert(url) async {
@@ -68,7 +72,8 @@ class P2PSocket {
       String key = base64.encode(List<int>.generate(8, (_) => r.nextInt(255)));
       HttpClient client = HttpClient(context: SecurityContext());
       //证书强行被信任
-      client.badCertificateCallback = (X509Certificate cert, String host, int port) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) {
         print('P2PSocket: 允许自签名证书 => $host:$port. ');
         //返回true强行被信任
         return true;

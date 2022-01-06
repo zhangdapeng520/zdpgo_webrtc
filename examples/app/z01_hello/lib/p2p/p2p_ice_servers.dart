@@ -3,10 +3,10 @@ import 'package:app_samples/p2p/p2p_turn.dart';
 //Turn服务器返回数据
 var _turnCredential;
 
-class P2PIceServers{
-
+class P2PIceServers {
   //主机地址
   String? _host;
+
   //端口
   int? _turnPort;
 
@@ -25,18 +25,18 @@ class P2PIceServers{
   };
 
   //构造函数
-  P2PIceServers(String host,int turnPort){
+  P2PIceServers(String host, int turnPort) {
     this._host = host;
     this._turnPort = turnPort;
   }
 
   //初始化
-  init(){
-    this._requestIceServers(this._host!,this._turnPort!);
+  init() {
+    this._requestIceServers(this._host!, this._turnPort!);
   }
 
   //发起请求
-  Future _requestIceServers(String host,int turnPort) async{
+  Future _requestIceServers(String host, int turnPort) async {
     if (_turnCredential == null) {
       try {
         //请求TurnServer服务器
@@ -54,5 +54,4 @@ class P2PIceServers{
     }
     return IceServers;
   }
-
 }

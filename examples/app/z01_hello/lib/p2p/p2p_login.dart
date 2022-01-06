@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_samples/p2p/p2p_client.dart';
+
 //一对一视频通话登录页面
 class P2PLogin extends StatefulWidget {
   @override
@@ -7,16 +8,17 @@ class P2PLogin extends StatefulWidget {
 }
 
 class _P2PLoginState extends State<P2PLogin> {
-  String? _userName;//用户名
-  String? _roomId;//房间号
+  String? _userName; //用户名
+  String? _roomId; //房间号
 
   //点击登录
-  handleJoin(){
+  handleJoin() {
     //跳转至P2PClient
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (BuildContext context) => P2PClient(this._userName!,this._roomId!)),
+          builder: (BuildContext context) =>
+              P2PClient(this._userName!, this._roomId!)),
     );
   }
 
@@ -75,12 +77,14 @@ class _P2PLoginState extends State<P2PLogin> {
                 width: 260.0,
                 height: 48.0,
                 //登录按钮
-                child: RaisedButton(
+                child: ElevatedButton(
                   child: Text(
                     '登录',
                   ),
                   onPressed: () {
+                    print("点击了登录按钮。。。");
                     if (_roomId != null) {
+                      print("加入一个房间。。。。$_roomId");
                       handleJoin();
                       return;
                     }

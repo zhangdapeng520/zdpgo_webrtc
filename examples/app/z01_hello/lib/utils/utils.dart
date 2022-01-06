@@ -1,4 +1,5 @@
 import 'dart:math';
+
 //产生随机数
 String randomNumeric(int length) {
   String start = '123456789';
@@ -13,4 +14,3 @@ String randomNumeric(int length) {
   }
   return result;
 }
-

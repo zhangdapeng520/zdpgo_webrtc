@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+
 // import 'package:flutter_webrtc/webrtc.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:app_samples/p2p/p2p_state.dart';
@@ -13,51 +14,71 @@ typedef void SignalingStateCallback(P2PState state);
 typedef void StreamStateCallback(MediaStream stream);
 //用户列表更新回调函数
 typedef void UsersUpdateCallback(dynamic event);
+
 /**
  * 信令类
  */
 class P2PVideoCall {
   //Json编码
   JsonEncoder _encoder = JsonEncoder();
+
   //Json解码
   JsonDecoder _decoder = JsonDecoder();
+
   //自已Id
   String _userId = '';
+
   //用户名
   String _userName = 'FlutterApp';
+
   //房间Id
   String _roomId = '111111';
+
   //WebSocket对象
   P2PSocket? _socket;
+
   //会话Id
   var _sessionId;
+
   //IP地址
   var _host;
+
   //信令服务器端口
   var _p2pPort = 8000;
+
   //Turn服务器端口
   var _turnPort = 9000;
+
   //PeerConnection集合
   var _peerConnections = Map<String, RTCPeerConnection>();
+
   //远端Candidate数组
   var _remoteCandidates = [];
+
   //获取ICE服务信息
   P2PIceServers? _p2pIceServers;
+
   //本地媒体流
   MediaStream? _localStream;
+
   //信令状态回调函数
   SignalingStateCallback? onStateChange;
+
   //媒体流状态回调函数,本地流
   StreamStateCallback? onLocalStream;
+
   //媒体流状态回调函数,远端流添加
   StreamStateCallback? onAddRemoteStream;
+
   //媒体流状态回调函数,远端流移除
   StreamStateCallback? onRemoveRemoteStream;
+
   //所有成员更新回调函数
   UsersUpdateCallback? onUsersUpdate;
 
   //信令类构造函数
-  P2PVideoCall(this._host,this._p2pPort,this._turnPort,this._userId,this._userName,this._roomId);
+  P2PVideoCall(this._host, this._p2pPort, this._turnPort, this._userId,
+      this._userName, this._roomId);
 
   //信令关闭
   close() {
@@ -122,7 +143,7 @@ class P2PVideoCall {
     _send('hangUp', {
       'sessionId': this._sessionId,
       'from': this._userId,
-      'roomId':_roomId,//房间Id
+      'roomId': _roomId, //房间Id
     });
   }
 
@@ -131,7 +152,6 @@ class P2PVideoCall {
     //取消息数据
     Map<String, dynamic> mapData = message;
     var data = mapData['data'];
-
 
     //使用消息类型作为判断条件
     switch (mapData['type']) {
@@ -170,7 +190,8 @@ class P2PVideoCall {
           //将PC放入PeerConnection集合里
           _peerConnections[id] = pc;
           //应答方PC设置远端SDP描述
-          await pc.setRemoteDescription(RTCSessionDescription(description['sdp'], description['type']));
+          await pc.setRemoteDescription(
+              RTCSessionDescription(description['sdp'], description['type']));
           //应答方创建应答信息
           await _createAnswer(id, pc, media);
           if (this._remoteCandidates.length > 0) {
@@ -194,7 +215,8 @@ class P2PVideoCall {
           var pc = _peerConnections[id];
           if (pc != null) {
             //提议方PC设置远端SDP描述
-            await pc.setRemoteDescription(RTCSessionDescription(description['sdp'], description['type']));
+            await pc.setRemoteDescription(
+                RTCSessionDescription(description['sdp'], description['type']));
           }
         }
         break;
@@ -208,10 +230,8 @@ class P2PVideoCall {
           //根据Id获取PeerConnection
           var pc = _peerConnections[id];
           //生成Candidate对象
-          RTCIceCandidate candidate = RTCIceCandidate(
-              candidateMap['candidate'],
-              candidateMap['sdpMid'],
-              candidateMap['sdpMLineIndex']);
+          RTCIceCandidate candidate = RTCIceCandidate(candidateMap['candidate'],
+              candidateMap['sdpMid'], candidateMap['sdpMLineIndex']);
           if (pc != null) {
             //将对方发过来的Candidate添加至PC对象里
             await pc.addCandidate(candidate);
@@ -280,7 +300,7 @@ class P2PVideoCall {
     print('连接:$url');
 
     //获取ICE信息
-    _p2pIceServers = P2PIceServers(this._host,this._turnPort);
+    _p2pIceServers = P2PIceServers(this._host, this._turnPort);
     _p2pIceServers!.init();
 
     //socket打开
@@ -290,9 +310,9 @@ class P2PVideoCall {
       this.onStateChange!(P2PState.ConnectionOpen);
       //发送新加入成员消息
       _send('joinRoom', {
-        'name': _userName,//名称
-        'id': _userId,//自己Id
-        'roomId':_roomId,//房间Id
+        'name': _userName, //名称
+        'id': _userId, //自己Id
+        'roomId': _roomId, //房间Id
       });
     };
 
@@ -337,7 +357,8 @@ class P2PVideoCall {
     //创建并获取本地媒体流
     _localStream = await createStream(media, isScreen);
     //创建PC
-    RTCPeerConnection pc = await createPeerConnection(_p2pIceServers!.IceServers, P2PConstraints.PC_CONSTRAINTS);
+    RTCPeerConnection pc = await createPeerConnection(
+        _p2pIceServers!.IceServers, P2PConstraints.PC_CONSTRAINTS);
     //添加本地流至PC
     pc.addStream(_localStream!);
     //PC收集到Candidate数据
@@ -356,7 +377,7 @@ class P2PVideoCall {
         },
         //会话Id
         'sessionId': this._sessionId,
-        'roomId':_roomId,//房间Id
+        'roomId': _roomId, //房间Id
       });
     };
 
@@ -365,14 +386,14 @@ class P2PVideoCall {
 
     //远端流到达
     pc.onAddStream = (stream) {
-      if (this.onAddRemoteStream != null){
+      if (this.onAddRemoteStream != null) {
         this.onAddRemoteStream!(stream);
       }
     };
 
     //远端流移除
     pc.onRemoveStream = (stream) {
-      if (this.onRemoveRemoteStream != null){
+      if (this.onRemoveRemoteStream != null) {
         this.onRemoveRemoteStream!(stream);
       }
     };
@@ -385,7 +406,8 @@ class P2PVideoCall {
   _createOffer(String id, RTCPeerConnection pc, String media) async {
     try {
       //返回SDP信息
-      RTCSessionDescription s = await pc.createOffer(P2PConstraints.SDP_CONSTRAINTS);
+      RTCSessionDescription s =
+          await pc.createOffer(P2PConstraints.SDP_CONSTRAINTS);
       //设置本地描述信息
       pc.setLocalDescription(s);
       //发送Offer至对方
@@ -400,7 +422,7 @@ class P2PVideoCall {
         'sessionId': this._sessionId,
         //媒体类型
         'media': media,
-        'roomId':_roomId,//房间Id
+        'roomId': _roomId, //房间Id
       });
     } catch (e) {
       print(e.toString());
@@ -411,7 +433,8 @@ class P2PVideoCall {
   _createAnswer(String id, RTCPeerConnection pc, media) async {
     try {
       //返回SDP信息
-      RTCSessionDescription s = await pc.createAnswer(P2PConstraints.SDP_CONSTRAINTS);
+      RTCSessionDescription s =
+          await pc.createAnswer(P2PConstraints.SDP_CONSTRAINTS);
       //设置本地描述信息
       pc.setLocalDescription(s);
       //发送Answer至对方
@@ -425,7 +448,7 @@ class P2PVideoCall {
         //会话Id
         'sessionId': this._sessionId,
         //房间Id
-        'roomId':_roomId,
+        'roomId': _roomId,
       });
     } catch (e) {
       print(e.toString());

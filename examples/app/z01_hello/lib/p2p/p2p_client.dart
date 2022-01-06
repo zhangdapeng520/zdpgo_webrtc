@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'dart:core';
-// import 'package:flutter_webrtc/webrtc.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:app_samples/p2p/p2p_video_call.dart';
 import 'package:app_samples/config/server_url.dart';
 import 'package:app_samples/p2p/p2p_state.dart';
 import 'package:app_samples/utils/utils.dart';
+
 /**
  * 一对一视频通话示例
  */
 class P2PClient extends StatefulWidget {
-  static String tag = '一对一视频通话';
+  // static String tag = '一对一视频通话';
 
   String _userName = "";
   String _roomId = "111111";
 
-  P2PClient(this._userName,this._roomId);
+  P2PClient(this._userName, this._roomId);
 
   @override
   _P2PClientState createState() => _P2PClientState();
@@ -24,22 +24,29 @@ class P2PClient extends StatefulWidget {
 class _P2PClientState extends State<P2PClient> {
   //信令
   P2PVideoCall? _p2pVideoCall;
+
   //所有成员
   List<dynamic> _users = [];
+
   //自己Id
   var _userId = randomNumeric(6);
+
   //本地视频渲染对象
   RTCVideoRenderer _localRenderer = RTCVideoRenderer();
+
   //远端视频渲染对象
   RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
-  //是否呼叫
+
+  // 是否呼叫
   bool _inCalling = false;
+
   //是否麦克风禁音
   bool _microphoneOff = false;
 
   @override
   initState() {
     super.initState();
+    print("执行了初始化方法。。。");
     //初始化视频渲染对象
     initRenderers();
     //开始连接
@@ -48,6 +55,7 @@ class _P2PClientState extends State<P2PClient> {
 
   //初始化视频渲染对象
   initRenderers() async {
+    print("初始化渲染器。。。");
     await _localRenderer.initialize();
     await _remoteRenderer.initialize();
   }
@@ -56,7 +64,7 @@ class _P2PClientState extends State<P2PClient> {
   deactivate() {
     super.deactivate();
     //关闭信令
-    if (_p2pVideoCall != null){
+    if (_p2pVideoCall != null) {
       _p2pVideoCall!.close();
     }
     //销毁本地视频
@@ -69,7 +77,9 @@ class _P2PClientState extends State<P2PClient> {
   void _connect() async {
     if (_p2pVideoCall == null) {
       //实例化信令并执行连接
-      _p2pVideoCall = P2PVideoCall(ServerUrl.IP,ServerUrl.P2P_PORT,ServerUrl.TURN_PORT,_userId,widget._userName,widget._roomId)..connect();
+      _p2pVideoCall = P2PVideoCall(ServerUrl.IP, ServerUrl.P2P_PORT,
+          ServerUrl.TURN_PORT, _userId, widget._userName, widget._roomId)
+        ..connect();
       //信令状态处理
       _p2pVideoCall!.onStateChange = (P2PState state) {
         switch (state) {
@@ -97,8 +107,9 @@ class _P2PClientState extends State<P2PClient> {
       //成员更新处理
       _p2pVideoCall!.onUsersUpdate = ((event) {
         this.setState(() {
-          //设置所有成员
+          // 设置所有成员
           _users = event['users'];
+          print("设置所有成员。。。。$_users, $event");
         });
       });
 
@@ -146,13 +157,15 @@ class _P2PClientState extends State<P2PClient> {
   //麦克风静音
   _muteMic() {
     var muted = !_microphoneOff;
-      setState(() {
-        _microphoneOff = muted;
-      });
+    setState(() {
+      _microphoneOff = muted;
+    });
     _p2pVideoCall!.muteMicrophone(!muted);
   }
 
+  // 构建用户列表
   _buildUserItem(context, user) {
+    print("构建用户列表$user");
     return ListBody(children: <Widget>[
       ListTile(
         title: Text(user['name']),
@@ -179,11 +192,12 @@ class _P2PClientState extends State<P2PClient> {
     ]);
   }
 
+  // 构建页面内容
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('一对一视频通话'),
+        title: Text('一对一视频通话111'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: _inCalling
@@ -205,7 +219,9 @@ class _P2PClientState extends State<P2PClient> {
                     ),
                     //麦克风禁音按钮
                     FloatingActionButton(
-                      child: this._microphoneOff ? Icon(Icons.mic_off) : Icon(Icons.mic),
+                      child: this._microphoneOff
+                          ? Icon(Icons.mic_off)
+                          : Icon(Icons.mic),
                       onPressed: _muteMic,
                     )
                   ]))
@@ -241,7 +257,8 @@ class _P2PClientState extends State<P2PClient> {
                       //固定宽度,竖屏时为90,横屏时为120
                       width: orientation == Orientation.portrait ? 90.0 : 120.0,
                       //固定高度,竖屏时为120,横屏时为90
-                      height: orientation == Orientation.portrait ? 120.0 : 90.0,
+                      height:
+                          orientation == Orientation.portrait ? 120.0 : 90.0,
                       //本地视频渲染
                       child: RTCVideoView(_localRenderer),
                       decoration: BoxDecoration(color: Colors.black54),
@@ -255,6 +272,7 @@ class _P2PClientState extends State<P2PClient> {
               padding: EdgeInsets.all(0.0),
               itemCount: _users.length,
               itemBuilder: (context, i) {
+                print("构建用户列表：$context, $i");
                 return _buildUserItem(context, _users[i]);
               }),
     );
