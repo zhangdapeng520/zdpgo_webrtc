@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "antd";
+import {Button} from "antd";
 
 //本地连接对象
 let localConnection;
@@ -29,10 +29,10 @@ class DataChannelFile extends React.Component {
 
     componentDidMount() {
 
-        sendProgress = this.refs['sendProgress'];
-        receiveProgress = this.refs['receiveProgress'];
+        sendProgress = this.refSendProgress;
+        receiveProgress = this.refReceiveProgress;
 
-        fileInput = this.refs['fileInput'];
+        fileInput = this.refFileInput;
         //监听change事件,判断文件是否选择
         fileInput.addEventListener('change', async () => {
             const file = fileInput.files[0];
@@ -46,7 +46,7 @@ class DataChannelFile extends React.Component {
 
     //建立对等连接并发送文件
     startSendFile = async () => {
-    
+
         //创建RTCPeerConnection对象
         localConnection = new RTCPeerConnection();
         console.log('创建本地PeerConnection成功:localConnection');
@@ -322,7 +322,7 @@ class DataChannelFile extends React.Component {
             const received = new Blob(receiveBuffer);
             //将缓存数据置为空
             receiveBuffer = [];
-            
+
             //获取下载连接对象
             let download = this.refs['download']
             //创建下载文件对象及链接
@@ -351,37 +351,38 @@ class DataChannelFile extends React.Component {
     //取消发送文件
     cancleSendFile = () => {
         if (fileReader && fileReader.readyState === 1) {
-          console.log('取消读取文件');
-          fileReader.abort();
+            console.log('取消读取文件');
+            fileReader.abort();
         }
-      }
+    }
 
     render() {
         return (
             <div className="container">
                 <div>
                     <form id="fileInfo">
-                        <input type="file" ref="fileInput" name="files" />
+                        <input type="file" ref={(el) => this.refFileInput = el} name="files"/>
                     </form>
                     <div>
                         <h2>发送</h2>
-                        <progress ref="sendProgress" max="0" value="0" style={{width:'500px'}}></progress>
+                        <progress ref={(el) => this.refSendProgress = el} max="0" value="0" style={{width: '500px'}}/>
                     </div>
                     <div>
                         <h2>接收</h2>
-                        <progress ref="receiveProgress" max="0" value="0" style={{width:'500px'}}></progress>
+                        <progress ref={(el) => this.refReceiveProgress = el} max="0" value="0" style={{width: '500px'}}/>
                     </div>
                 </div>
 
-                <a ref="download"></a>
+                <a ref={(el) => this.refDownload = el}/>
                 <div>
-                    <Button onClick={this.startSendFile} style={{ marginRight: "10px" }}>发送</Button>
-                    <Button onClick={this.cancleSendFile} style={{ marginRight: "10px" }}>取消</Button>
-                    <Button onClick={this.closeChannel} style={{ marginRight: "10px" }}>关闭</Button>
+                    <Button onClick={this.startSendFile} style={{marginRight: "10px"}}>发送</Button>
+                    <Button onClick={this.cancleSendFile} style={{marginRight: "10px"}}>取消</Button>
+                    <Button onClick={this.closeChannel} style={{marginRight: "10px"}}>关闭</Button>
                 </div>
             </div>
         );
     }
 }
+
 //导出组件
 export default DataChannelFile;
